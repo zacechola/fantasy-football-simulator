@@ -49,12 +49,19 @@ def score(data):
     return points
 
 for x in range(0, MATCHUPS):
-    opp_normal_average.append(score(opp))
-    me_normal_average.append(score(me))
+    me_score = score(me)
+    opp_score = score(opp)
+    opp_normal_average.append(opp_score)
+    me_normal_average.append(me_score)
 
-    if score(me) > score(opp):
+    if me_score > opp_score:
         wins += 1
 
+    if me_score > me_high_score:
+        me_high_score = me_score
+
+    if opp_score > opp_high_score:
+        opp_high_score = opp_score
 
 print "Win %:"
 print (float(wins) / float(MATCHUPS)) * 100
@@ -63,4 +70,10 @@ print "My average:"
 print float(sum(me_normal_average)) / float(len(me_normal_average))
 print "Opponent average:"
 print float(sum(opp_normal_average)) / float(len(opp_normal_average))
+
+print "My highest score:"
+print me_high_score
+
+print "Opponent highest score:"
+print opp_high_score
 
