@@ -2,11 +2,11 @@ from random import normalvariate
 from random import gauss
 from numpy import array
 
-MATCHUPS = 50000
+MATCHUPS = 60000
 
 me = array(
         [
-        [23, 2.06],      #griffin
+        [23, 2.06],     #griffin
         [18, 1.14],     #foster
         [12, 3.41],     #mathews
         [21, 5.29],     #thomas
@@ -14,7 +14,7 @@ me = array(
         [12, 3.40],     #pettigrew
         [14, 2.73],     #johnson
         [12, 3.03],     #49ers
-        [10, 2.72],      #hanson
+        [10, 2.72],     #hanson
         ]
         )
 
@@ -54,6 +54,10 @@ for x in range(0, MATCHUPS):
     opp_normal_average.append(opp_score)
     me_normal_average.append(me_score)
 
+    print me_score
+    print opp_score
+    print "---"
+
     if me_score > opp_score:
         wins += 1
 
@@ -62,6 +66,10 @@ for x in range(0, MATCHUPS):
 
     if opp_score > opp_high_score:
         opp_high_score = opp_score
+
+
+print ""
+print "----"
 
 print "Win %:"
 print (float(wins) / float(MATCHUPS)) * 100
