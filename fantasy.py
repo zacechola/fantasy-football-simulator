@@ -2,8 +2,11 @@ from random import normalvariate
 from random import gauss
 from numpy import array
 
-# Run at least 10000 MATCHUP to avoid divide by zero errors
-MATCHUPS = 60000
+MATCHUPS = int(raw_input("How many matchups to run? "))
+
+if MATCHUPS < 6000:
+    print "Run at least 6000 matchups to avoid divide by zero errors!"
+    MATCHUPS = int(raw_input("How many matchups to run? "))
 
 me = array(
         [
