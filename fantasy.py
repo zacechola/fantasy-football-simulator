@@ -2,7 +2,7 @@ from random import normalvariate
 from random import gauss
 from numpy import array
 
-MATCHUPS = 60000
+MATCHUPS = 250000
 
 me = array(
         [
@@ -36,15 +36,18 @@ me_normal_average = []
 opp_normal_average = []
 wins = 0
 opp_win_average = []
+me_win_average = []
 opp_high_score = 0
 me_high_score = 0
+opp_low_score = 900
+me_low_score = 900
 
 def score(data):
     points = 0
     for i in data:
         mu = sum(i[:1])
         sigma = sum(i[1:])
-        score = gauss(mu, sigma)
+        score = normalvariate(mu, sigma)
         points += score
     return points
 
@@ -54,8 +57,8 @@ for x in range(0, MATCHUPS):
     opp_normal_average.append(opp_score)
     me_normal_average.append(me_score)
 
-    print me_score
-    print opp_score
+    print "Me:  %f" % me_score
+    print "Opp: %f" % opp_score
     print "---"
 
     if me_score > opp_score:
@@ -67,21 +70,40 @@ for x in range(0, MATCHUPS):
     if opp_score > opp_high_score:
         opp_high_score = opp_score
 
+    if me_score < me_low_score:
+        me_low_score = me_score
+        me_win_average.append(me_score)
 
-print ""
-print "----"
+    if opp_score < opp_low_score:
+        opp_low_score = opp_score
 
+    if opp_score > me_score:
+        opp_win_average.append(opp_score)
+
+
+print "\n----"
 print "Win %:"
 print (float(wins) / float(MATCHUPS)) * 100
-
+print ""
 print "My average:"
 print float(sum(me_normal_average)) / float(len(me_normal_average))
 print "Opponent average:"
 print float(sum(opp_normal_average)) / float(len(opp_normal_average))
-
+print ""
 print "My highest score:"
 print me_high_score
-
+print "My lowest score:"
+print me_low_score
+print ""
 print "Opponent highest score:"
 print opp_high_score
-
+print "Opponent low score:"
+print opp_low_score
+print ""
+print "Opponent winning score average:"
+opp_win_score_average = float(sum(opp_win_average)) / float(len(opp_win_average))
+print opp_win_score_average
+print "My winning score average:"
+me_win_score_average = float(sum(me_win_average)) / float(len(me_win_average))
+print me_win_score_average
+print "----\n"
