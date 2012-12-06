@@ -2,19 +2,19 @@ from random import normalvariate
 from numpy import *
 from sys import exit
 
-MATCHUPS = int(raw_input("How many matchups to run? "))
+MATCHUPS = raw_input("How many matchups to run? ")
 
-if MATCHUPS < 6000:
+if int(MATCHUPS) < 6000:
     print "Run at least 6000 matchups to avoid divide by zero errors!"
-    MATCHUPS = int(raw_input("How many matchups to run? "))
+    exit()
 
 me = array(
         [
-        [20.75, 2.06],  #griffin
-        [17.35, 1.14],  #foster
-        [14.55, 3.41],  #mathews
-        [24., 5.29],    #thomas
-        [18.23, 4.05],  #cobb
+        [24, 3.83],     #griffin
+        [18.10, 1.69],  #foster
+        [13.80, 2.64],  #mathews
+        [22., 4.36],    #thomas
+        [17.98, 3.67],  #cobb
         [13.25, 3.40],  #pettigrew
         [15.78, 2.73],  #johnson
         [11.15, 3.03],  #49ers
@@ -24,11 +24,11 @@ me = array(
 
 opp = array(
         [
-        [20.53, 3.08],  #brees
+        [22.53, 3.27],  #brees
         [16.63, 2.93],  #johnson
         [17.28, 3.92],  #spiller
         [19.95, 5.80],  #green
-        [5.33, 6.25],   #shorts*
+        [14., 5.83],   #bowe
         [15.95, 6.56],  #witten
         [16., 5.35],    #graham
         [3.55, 1.83],   #ravens
@@ -56,7 +56,7 @@ def score(data):
         points += score
     return points
 
-for i in range(0, MATCHUPS):
+for i in range(0, int(MATCHUPS)):
     me_score = score(me)
     opp_score = score(opp)
     opp_normal_average.append(opp_score)
