@@ -25,6 +25,7 @@ me = array(
         ]
         )
 
+#liz
 opp = array(
         [
         [22.53, 3.27],  #brees
@@ -38,6 +39,37 @@ opp = array(
         [6., 4.07]      #tucker
         ]
         )
+
+#beth
+#opp = array(
+        #[
+        #[19.67, 1.53],     #griffin
+        #[15.67, 3.215],  #foster
+        #[5.667, 6.429],  #mathews
+        #[24.67, 3.512],    #thomas
+        #[23., 4.583],  #cobb
+        #[13.33, 4.041],  #pettigrew
+        #[18.33, 4.619],  #johnson
+        #[8., 0.577],  #49ers
+        #[9, 1],  #hanson
+        #]
+        #)
+
+#matt
+#opp = array(
+        #[
+        #[21.67, 3.786],  #brees
+        #[18., 5.292],  #johnson
+        #[16.33, 3.055],  #spiller
+        #[22.67, 4.163],  #green
+        #[19., 4.583],    #bowe
+        #[10.33, 5.51],  #witten
+        #[13.33, 3.215],    #graham
+        #[2.333, 2.082],   #ravens
+        #[8.667, 1.155]      #tucker
+        #]
+        #)
+
 
 me_normal_average = []
 opp_normal_average = []
@@ -60,6 +92,19 @@ def spread_freq(baseline):
             count += 1
     return count
 
+def score_freq(llimit, ulimit, team):
+    count = 0
+    def test(team):
+        if team == 'opp':
+            return opp_normal_average
+        if team == 'me':
+            return me_normal_average
+
+    for q in test(team):
+        if q <= ulimit and q >= llimit:
+            count += 1
+    return count
+
 def score(data):
     points = 0
     for i in data:
@@ -68,6 +113,31 @@ def score(data):
         score = int(normalvariate(mu, sigma)) # ESPN league is whole numbers
         points += score
     return points
+
+
+
+def freq_table():
+    bounds = array( 
+            [
+                [80.5, 90.5],
+                [90.5, 99.5],
+                [99.5, 110.5],
+                [110.5, 120.5],
+                [120.5, 130.5],
+                [130.5, 140.5],
+                [140.5, 150.5],
+                [150.5, 160.5],
+                [160.5, 170.5],
+                [170.5, 180.5],
+                [180.5, 190.5]
+                ]
+                )
+
+    for i in bounds:
+        upper = i[:1]
+        lower = i[1:]
+        print "%d.5 - %d.5 => %d \t\t %d.5 - %d.5 => %d " % (upper, lower, score_freq(upper, lower, 'me'), upper, lower, score_freq(upper, lower, 'opp'))
+
 
 for i in range(0, int(MATCHUPS)):
     me_score = score(me)
@@ -152,5 +222,9 @@ print me_win_spread
 print ""
 print "My win spread percent over %d points" % spread_baseline
 print (spread_freq(spread_baseline) / float(MATCHUPS)) * 100
+
+print ""
+
+freq_table()
 
 print "----\n"
