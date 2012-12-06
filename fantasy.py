@@ -1,5 +1,6 @@
 from random import normalvariate
-from numpy import array
+from numpy import *
+from sys import exit
 
 MATCHUPS = int(raw_input("How many matchups to run? "))
 
@@ -9,29 +10,29 @@ if MATCHUPS < 6000:
 
 me = array(
         [
-        [23, 2.06],     #griffin
-        [18, 1.14],     #foster
-        [12, 3.41],     #mathews
-        [21, 5.29],     #thomas
-        [17, 4.05],     #cobb
-        [12, 3.40],     #pettigrew
-        [14, 2.73],     #johnson
-        [12, 3.03],     #49ers
-        [10, 2.72],     #hanson
+        [20.75, 2.06],  #griffin
+        [17.35, 1.14],  #foster
+        [14.55, 3.41],  #mathews
+        [24., 5.29],    #thomas
+        [18.23, 4.05],  #cobb
+        [13.25, 3.40],  #pettigrew
+        [15.78, 2.73],  #johnson
+        [11.15, 3.03],  #49ers
+        [9.78, 2.72],   #hanson
         ]
         )
 
 opp = array(
         [
-        [23, 3.08],     #brees
-        [15, 2.93],     #johnson
-        [16, 3.92],     #spiller
-        [21, 5.80],     #green
-        [13, 5.83],     #bowe
-        [15, 6.56],     #witten
-        [15, 5.35],     #graham
-        [8, 1.83],      #ravens
-        [8, 4.07]       #tucker
+        [20.53, 3.08],  #brees
+        [16.63, 2.93],  #johnson
+        [17.28, 3.92],  #spiller
+        [19.95, 5.80],  #green
+        [5.33, 6.25],   #shorts*
+        [15.95, 6.56],  #witten
+        [16., 5.35],    #graham
+        [3.55, 1.83],   #ravens
+        [6., 4.07]      #tucker
         ]
         )
 
@@ -42,6 +43,7 @@ opp_win_average = []
 me_win_average = []
 opp_high_score = 0
 me_high_score = 0
+ties = 0
 opp_low_score = 900
 me_low_score = 900
 
@@ -50,18 +52,18 @@ def score(data):
     for i in data:
         mu = sum(i[:1])
         sigma = sum(i[1:])
-        score = normalvariate(mu, sigma)
+        score = int(normalvariate(mu, sigma))
         points += score
     return points
 
-for x in range(0, MATCHUPS):
+for i in range(0, MATCHUPS):
     me_score = score(me)
     opp_score = score(opp)
     opp_normal_average.append(opp_score)
     me_normal_average.append(me_score)
 
-    print "Me:  %f" % me_score
-    print "Opp: %f" % opp_score
+    print "Me:  %d" % me_score
+    print "Opp: %d" % opp_score
     print "---"
 
     #count wins
@@ -72,6 +74,7 @@ for x in range(0, MATCHUPS):
     #find high score
     if me_score > me_high_score:
         me_high_score = me_score
+
     #find opponent high score
     if opp_score > opp_high_score:
         opp_high_score = opp_score
@@ -84,8 +87,12 @@ for x in range(0, MATCHUPS):
         opp_low_score = opp_score
 
     #find losses
-    if opp_score > me_score:
+    if opp_score >= me_score:
         opp_win_average.append(opp_score)
+
+    #find ties
+    if opp_score == me_score:
+        ties += 1
 
 
 print "\n----"
@@ -113,4 +120,7 @@ print opp_win_score_average
 print "My winning score average:"
 me_win_score_average = float(sum(me_win_average)) / float(len(me_win_average))
 print me_win_score_average
+print ""
+print "Ties %:"
+print float((ties) / float(MATCHUPS)) * 100
 print "----\n"
