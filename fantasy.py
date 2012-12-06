@@ -2,7 +2,8 @@ from random import normalvariate
 from random import gauss
 from numpy import array
 
-MATCHUPS = 250000
+# Run at least 10000 MATCHUP to avoid divide by zero errors
+MATCHUPS = 60000
 
 me = array(
         [
@@ -61,22 +62,26 @@ for x in range(0, MATCHUPS):
     print "Opp: %f" % opp_score
     print "---"
 
+    #count wins
     if me_score > opp_score:
         wins += 1
+        me_win_average.append(me_score)
 
+    #find high score
     if me_score > me_high_score:
         me_high_score = me_score
-
+    #find opponent high score
     if opp_score > opp_high_score:
         opp_high_score = opp_score
 
+    #find low score
     if me_score < me_low_score:
         me_low_score = me_score
-        me_win_average.append(me_score)
 
     if opp_score < opp_low_score:
         opp_low_score = opp_score
 
+    #find losses
     if opp_score > me_score:
         opp_win_average.append(opp_score)
 
