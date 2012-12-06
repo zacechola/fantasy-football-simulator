@@ -1,5 +1,4 @@
 from random import normalvariate
-from random import gauss
 from numpy import array
 
 MATCHUPS = int(raw_input("How many matchups to run? "))
