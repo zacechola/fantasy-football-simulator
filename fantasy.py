@@ -3,13 +3,19 @@ from random import normalvariate
 from sys import exit
 from numpy import array
 
+
+# Parse arguments from the command line
+
 parser = argparse.ArgumentParser(description='Calculate fantasy football win probability', 
         epilog='And that is how you win your league')
 parser.add_argument("matchups", help="the number of matchup trials to run", type=int)
-parser.add_argument("-s", "--spread", help="calculate the chance you exceeding a spread", type=int)
+parser.add_argument("-s", "--spread", help="calculate the chance your score exceeds a spread", type=int)
 parser.add_argument("-q", "--quiet", help="do not print matchups", action="store_true")
 parser.parse_args()
 args = parser.parse_args()
+
+
+# Initialize some variables
 
 MATCHUPS = args.matchups
 
@@ -21,13 +27,9 @@ if MATCHUPS < 6000:
 # make bets and win money
 if args.spread:
     spread_baseline = args.spread
-else:
-    spread_baseline = 0
 
 if args.quiet:
     print "Running %d trials..." % MATCHUPS
-
-#spread_baseline = int(raw_input("Enter a winning points spread: "))
 
 me = array(
         [
@@ -58,19 +60,26 @@ opp = array(
         ]
         )
 
+
 me_normal_average = []
 opp_normal_average = []
-wins = 0
+me_average_win_spread = []
+opp_average_win_spread = []
 opp_win_average = []
 me_win_average = []
+
+wins = 0
 opp_high_score = 0
 me_high_score = 0
 ties = 0
+
+# this is a hack, scores should never be this high
 opp_low_score = 900
 me_low_score = 900
-me_average_win_spread = []
-opp_average_win_spread = []
 
+
+# Calculate the frequency of scores over a threshold
+# Returns a count
 
 def spread_freq(baseline):
     count = 0
@@ -78,6 +87,9 @@ def spread_freq(baseline):
         if q > baseline:
             count += 1
     return count
+
+# Calculate the frequency of scores within defined bounds
+# Returns counts
 
 def score_freq(llimit, ulimit, team):
     count = 0
@@ -92,6 +104,9 @@ def score_freq(llimit, ulimit, team):
             count += 1
     return count
 
+# Generate player scores based on data in array and sum the points
+# Returns total points
+
 def score(data):
     points = 0
     for i in data:
@@ -101,7 +116,9 @@ def score(data):
         points += score
     return points
 
-
+# Implements score_freq
+# Defines the bounds for the frequency table
+# prints the output
 
 def freq_table():
     bounds = array( 
@@ -123,8 +140,12 @@ def freq_table():
     for i in bounds:
         upper = i[:1]
         lower = i[1:]
-        print "%d.5 - %d.5 => %d \t\t %d.5 - %d.5 => %d " % (upper, lower, score_freq(upper, lower, 'me'), upper, lower, score_freq(upper, lower, 'opp'))
+        print "%d.5 - %d.5 => %d \t\t %d.5 - %d.5 => %d " % (
+                upper, lower, score_freq(upper, lower, 'me'), 
+                upper, lower, score_freq(upper, lower, 'opp'))
 
+
+# Main loop
 
 for i in range(0, int(MATCHUPS)):
     me_score = score(me)
@@ -167,52 +188,45 @@ for i in range(0, int(MATCHUPS)):
     if opp_score == me_score:
         ties += 1
 
-#output
+
+# Output
 print "\n----"
-print "Win %:"
-print (float(wins) / float(MATCHUPS)) * 100
-print ""
-print "My average:"
-print float(sum(me_normal_average)) / float(len(me_normal_average))
-print "Opponent average:"
-print float(sum(opp_normal_average)) / float(len(opp_normal_average))
+print "Win: {}%".format((float(wins) / float(MATCHUPS)) * 100)
+print "Tie: {}% \n".format(float((ties) / float(MATCHUPS)) * 100)
 
-print ""
-print "My highest score:"
-print me_high_score
-print "My lowest score:"
-print me_low_score
-print ""
-print "Opponent highest score:"
-print opp_high_score
-print "Opponent low score:"
-print opp_low_score
 
-print ""
-print "Opponent winning score average:"
+if args.spread:
+    spread_percent = (spread_freq(spread_baseline) / float(MATCHUPS)) * 100
+    if spread_percent > 50.00:
+        print "Wins over {} points: {}%".format(spread_baseline, spread_percent)
+        print "You have a positive expected value on an even money spread bet! \n"
+    else:
+        print "Wins over {} points: {}% \n".format(spread_baseline, spread_percent)
+
+
+print "My average: {}".format(float(sum(me_normal_average)) / float(len(me_normal_average)))
+print "Opponent average: {} \n".format(float(sum(opp_normal_average)) / float(len(opp_normal_average)))
+
+print "My highest score: %d" % me_high_score
+print "My lowest score: %d" % me_low_score
+print "My space: %d \n" % (me_high_score - me_low_score)
+
+print "Opponent highest score: %d" % opp_high_score
+print "Opponent low score: %d" % opp_low_score
+print "Opponent space: %d \n" % (opp_high_score - opp_low_score)
+
 opp_win_score_average = float(sum(opp_win_average)) / float(len(opp_win_average))
-print opp_win_score_average
-print "Average opponent winning spread:"
+print "Opponent winning score average: %f" % opp_win_score_average
 opp_win_spread = float(sum(opp_average_win_spread)) / float(len(opp_average_win_spread))
-print opp_win_spread
-print "Ties %:"
-print float((ties) / float(MATCHUPS)) * 100
+print "Opponent average winning spread: %f \n" % opp_win_spread
 
-print ""# make bets and win money
-
-print "My winning score average:"
 me_win_score_average = float(sum(me_win_average)) / float(len(me_win_average))
-print me_win_score_average
-print "My average winning spread:"
+print "My winning score average: %f" % me_win_score_average
 me_win_spread = float(sum(me_average_win_spread)) / float(len(me_average_win_spread))
-print me_win_spread
+print "My average winning spread: %f \n" % me_win_spread
 
-print ""
-print "My win spread percent over %d points" % spread_baseline
-print (spread_freq(spread_baseline) / float(MATCHUPS)) * 100
-
-print ""
-
+print "Frequency of scores:"
+print "me \t \t \t \t opp"
 freq_table()
 
 print "----\n"
