@@ -5,7 +5,6 @@ some other things not necessarily in this script yet).
 
 TODO:
 
-- Parse options from command line
 - Import projections from CSV
 - Calculate Consensus mean and standard deviation in script
 - Add positions

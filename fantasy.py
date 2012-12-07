@@ -15,7 +15,7 @@ MATCHUPS = args.matchups
 
 if MATCHUPS < 6000:
     print "Run at least 6000 matchups to avoid errors!"
-    exit()
+    MATCHUPS = int(raw_input("Enter a number of matchup trials: "))
 
 
 # make bets and win money
@@ -23,6 +23,9 @@ if args.spread:
     spread_baseline = args.spread
 else:
     spread_baseline = 0
+
+if args.quiet:
+    print "Running %d trials..." % MATCHUPS
 
 #spread_baseline = int(raw_input("Enter a winning points spread: "))
 
