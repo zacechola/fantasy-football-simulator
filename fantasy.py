@@ -1,22 +1,37 @@
+import argparse
 from random import normalvariate
-from numpy import *
 from sys import exit
+from numpy import array
 
-MATCHUPS = raw_input("How many matchups to run? ")
+parser = argparse.ArgumentParser(description='Calculate fantasy football win probability', 
+        epilog='And that is how you win your league')
+parser.add_argument("matchups", help="the number of matchup trials to run", type=int)
+parser.add_argument("-s", "--spread", help="calculate the chance you exceeding a spread", type=int)
+parser.add_argument("-q", "--quiet", help="do not print matchups", action="store_true")
+parser.parse_args()
+args = parser.parse_args()
 
-if int(MATCHUPS) < 6000:
+MATCHUPS = args.matchups
+
+if MATCHUPS < 6000:
     print "Run at least 6000 matchups to avoid errors!"
     exit()
-# make bets and win money
 
-spread_baseline = int(raw_input("Enter a spread: "))
+
+# make bets and win money
+if args.spread:
+    spread_baseline = args.spread
+else:
+    spread_baseline = 0
+
+#spread_baseline = int(raw_input("Enter a winning points spread: "))
 
 me = array(
         [
         [24, 3.83],     #griffin
         [18.10, 1.69],  #foster
         [13.80, 2.64],  #mathews
-        [23., 4.36],    #thomas
+        [13, 0],        #thomas
         [17.98, 3.67],  #cobb
         [12.25, 2.50],  #pettigrew
         [16.03, 3.14],  #johnson
@@ -25,7 +40,7 @@ me = array(
         ]
         )
 
-#liz
+
 opp = array(
         [
         [22.53, 3.27],  #brees
@@ -39,37 +54,6 @@ opp = array(
         [6., 4.07]      #tucker
         ]
         )
-
-#beth
-#opp = array(
-        #[
-        #[19.67, 1.53],     #griffin
-        #[15.67, 3.215],  #foster
-        #[5.667, 6.429],  #mathews
-        #[24.67, 3.512],    #thomas
-        #[23., 4.583],  #cobb
-        #[13.33, 4.041],  #pettigrew
-        #[18.33, 4.619],  #johnson
-        #[8., 0.577],  #49ers
-        #[9, 1],  #hanson
-        #]
-        #)
-
-#matt
-#opp = array(
-        #[
-        #[21.67, 3.786],  #brees
-        #[18., 5.292],  #johnson
-        #[16.33, 3.055],  #spiller
-        #[22.67, 4.163],  #green
-        #[19., 4.583],    #bowe
-        #[10.33, 5.51],  #witten
-        #[13.33, 3.215],    #graham
-        #[2.333, 2.082],   #ravens
-        #[8.667, 1.155]      #tucker
-        #]
-        #)
-
 
 me_normal_average = []
 opp_normal_average = []
@@ -144,10 +128,11 @@ for i in range(0, int(MATCHUPS)):
     opp_score = score(opp)
     opp_normal_average.append(opp_score)
     me_normal_average.append(me_score)
-
-    print "Me:  %d" % me_score
-    print "Opp: %d" % opp_score
-    print "---"
+    
+    if not args.quiet:
+        print "Me:  %d" % me_score
+        print "Opp: %d" % opp_score
+        print "---"
 
     #count wins
     if me_score > opp_score:
@@ -204,7 +189,7 @@ print ""
 print "Opponent winning score average:"
 opp_win_score_average = float(sum(opp_win_average)) / float(len(opp_win_average))
 print opp_win_score_average
-print "Average oppenent winning spread:"
+print "Average opponent winning spread:"
 opp_win_spread = float(sum(opp_average_win_spread)) / float(len(opp_average_win_spread))
 print opp_win_spread
 print "Ties %:"
