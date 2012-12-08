@@ -1,8 +1,8 @@
-import argparse
+import argparse, csv
 from random import normalvariate
 from sys import exit
 from numpy import array
-
+#from scipy import stats
 
 # Parse arguments from the command line
 
@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='Calculate fantasy football win pro
 parser.add_argument("matchups", help="the number of matchup trials to run", type=int)
 parser.add_argument("-s", "--spread", help="calculate the chance your score exceeds a spread", type=int)
 parser.add_argument("-q", "--quiet", help="do not print matchups", action="store_true")
+parser.add_argument("-t", "--ties", help="count ties as wins", action="store_true")
 parser.parse_args()
 args = parser.parse_args()
 
@@ -187,12 +188,23 @@ for i in range(0, int(MATCHUPS)):
     #find ties
     if opp_score == me_score:
         ties += 1
+        if args.ties:
+            wins += 1
+            me_average_win_spread.append(me_score - opp_score)
 
 
 # Output
 print "\n----"
-print "Win: {}%".format((float(wins) / float(MATCHUPS)) * 100)
-print "Tie: {}% \n".format(float((ties) / float(MATCHUPS)) * 100)
+wins_percentage = float((wins) / float(MATCHUPS)) * 100
+ties_percentage = float((ties) / float(MATCHUPS)) * 100
+
+if args.ties:
+    print "Win: {}% \n".format(wins_percentage)
+else:
+    print "Win: {}%".format(wins_percentage)
+    print "Tie: {}% \n".format(ties_percentage)
+
+
 
 
 if args.spread:
