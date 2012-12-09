@@ -8,3 +8,4 @@ TODO:
 - Add positions
 - Calculate optimal lineups
 - If projected to lose, calculate lineup with greatest upside
+- Support for multiple leagues 
