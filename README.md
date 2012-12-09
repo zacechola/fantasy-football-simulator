@@ -5,8 +5,6 @@ some other things not necessarily in this script yet).
 
 TODO:
 
-- Import projections from CSV
-- Calculate Consensus mean and standard deviation in script
 - Add positions
 - Calculate optimal lineups
 - If projected to lose, calculate lineup with greatest upside
