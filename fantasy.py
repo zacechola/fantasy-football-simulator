@@ -1,14 +1,14 @@
 import argparse, csv
 from random import normalvariate
-from sys import exit
 from numpy import array
-#from scipy import stats
+from scipy import stats
 
 # Parse arguments from the command line
 
 parser = argparse.ArgumentParser(description='Calculate fantasy football win probability', 
         epilog='And that is how you win your league')
 parser.add_argument("matchups", help="the number of matchup trials to run", type=int)
+parser.add_argument("opp_file", help="opponent file to open")
 parser.add_argument("-s", "--spread", help="calculate the chance your score exceeds a spread", type=int)
 parser.add_argument("-q", "--quiet", help="do not print matchups", action="store_true")
 parser.add_argument("-t", "--ties", help="count ties as wins", action="store_true")
@@ -18,12 +18,14 @@ args = parser.parse_args()
 
 # Initialize some variables
 
+me_file = open('teams/me.csv')
+opp_file = open(args.opp_file)
+
 MATCHUPS = args.matchups
 
 if MATCHUPS < 6000:
     print "Run at least 6000 matchups to avoid errors!"
     MATCHUPS = int(raw_input("Enter a number of matchup trials: "))
-
 
 # make bets and win money
 if args.spread:
@@ -32,51 +34,37 @@ if args.spread:
 if args.quiet:
     print "Running %d trials..." % MATCHUPS
 
-me = array(
-        [
-        [24, 3.83],     #griffin
-        [18.10, 1.69],  #foster
-        [13.80, 2.64],  #mathews
-        [13, 0],        #thomas
-        [17.98, 3.67],  #cobb
-        [12.25, 2.50],  #pettigrew
-        [16.03, 3.14],  #johnson
-        [11.15, 3.03],  #49ers
-        [10.03, 3.13],  #hanson
-        ]
-        )
+# Generates multidimensional list of team stats
+
+def generate_team_stats(csv_file):
+    data = csv.reader(csv_file)
+    rownum = 0
+    player_stats = []
+    team_stats = []
+    for row in data:
+        predictions = []
+
+        if rownum == 0:
+            header = row
+        else:
+            colnum = 0
+            for col in row:
+                if colnum == 0:
+                    player = col
+                if colnum != 0:
+                    predictions.append(float(col))
+
+                colnum += 1
 
 
-opp = array(
-        [
-        [22.53, 3.27],  #brees
-        [15.88, 2.84],  #johnson
-        [16.53, 2.86],  #spiller
-        [20.20, 6.16],  #green
-        [12., 4.79],    #bowe
-        [15.70, 6.22],  #witten
-        [16., 5.35],    #graham
-        [3.55, 1.83],   #ravens
-        [6., 4.07]      #tucker
-        ]
-        )
+            mean = array(predictions).mean()
+            std = array(predictions).std()
+            player_stats = [mean, std]
+            team_stats.append(player_stats)
 
+        rownum += 1
+    return team_stats
 
-me_normal_average = []
-opp_normal_average = []
-me_average_win_spread = []
-opp_average_win_spread = []
-opp_win_average = []
-me_win_average = []
-
-wins = 0
-opp_high_score = 0
-me_high_score = 0
-ties = 0
-
-# this is a hack, scores should never be this high
-opp_low_score = 900
-me_low_score = 900
 
 
 # Calculate the frequency of scores over a threshold
@@ -144,6 +132,27 @@ def freq_table():
         print "%d.5 - %d.5 => %d \t\t %d.5 - %d.5 => %d " % (
                 upper, lower, score_freq(upper, lower, 'me'), 
                 upper, lower, score_freq(upper, lower, 'opp'))
+
+
+
+me = array(generate_team_stats(me_file))
+opp = array(generate_team_stats(opp_file))
+me_normal_average = []
+opp_normal_average = []
+me_average_win_spread = []
+opp_average_win_spread = []
+opp_win_average = []
+me_win_average = []
+
+wins = 0
+opp_high_score = 0
+me_high_score = 0
+ties = 0
+
+# this is a hack, scores should never be this high
+opp_low_score = 900
+me_low_score = 900
+
 
 
 # Main loop
