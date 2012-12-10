@@ -236,15 +236,17 @@ print "Opponent highest score: %d" % opp_high_score
 print "Opponent low score: %d" % opp_low_score
 print "Opponent space: %d \n" % (opp_high_score - opp_low_score)
 
-opp_win_score_average = float(sum(opp_win_average)) / float(len(opp_win_average))
-print "Opponent winning score average: %f" % opp_win_score_average
-opp_win_spread = float(sum(opp_average_win_spread)) / float(len(opp_average_win_spread))
-print "Opponent average winning spread: %f \n" % opp_win_spread
+if opp_win_average:
+    opp_win_score_average = float(sum(opp_win_average)) / float(len(opp_win_average))
+    print "Opponent winning score average: %f" % opp_win_score_average
+    opp_win_spread = float(sum(opp_average_win_spread)) / float(len(opp_average_win_spread))
+    print "Opponent average winning spread: %f \n" % opp_win_spread
 
-me_win_score_average = float(sum(me_win_average)) / float(len(me_win_average))
-print "My winning score average: %f" % me_win_score_average
-me_win_spread = float(sum(me_average_win_spread)) / float(len(me_average_win_spread))
-print "My average winning spread: %f \n" % me_win_spread
+if me_win_average:
+    me_win_score_average = float(sum(me_win_average)) / float(len(me_win_average))
+    print "My winning score average: %f" % me_win_score_average
+    me_win_spread = float(sum(me_average_win_spread)) / float(len(me_average_win_spread))
+    print "My average winning spread: %f \n" % me_win_spread
 
 print "Frequency of scores:"
 print "me \t \t \t \t opp"
