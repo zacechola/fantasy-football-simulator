@@ -12,6 +12,7 @@ parser.add_argument("opp_file", help="opponent file to open")
 parser.add_argument("-s", "--spread", help="calculate the chance your score exceeds a spread", type=int)
 parser.add_argument("-q", "--quiet", help="do not print matchups", action="store_true")
 parser.add_argument("-t", "--ties", help="count ties as wins", action="store_true")
+parser.add_argument("-p", "--partial", help="count partial points", action="store_true")
 parser.parse_args()
 args = parser.parse_args()
 
@@ -97,12 +98,20 @@ def score_freq(llimit, ulimit, team):
 # Returns total points
 
 def score(data):
-    points = 0
-    for i in data:
-        mu = sum(i[:1])
-        sigma = sum(i[1:])
-        score = int(normalvariate(mu, sigma)) # ESPN league is whole numbers
-        points += score
+    if args.partial:
+        points = 0.0
+        for i in data:
+            mu = float(i[:1])
+            sigma = float(i[1:])
+            score = normalvariate(mu, sigma)
+            points += score
+    else:
+        points = 0
+        for i in data:
+            mu = sum(i[:1])
+            sigma = sum(i[1:])
+            score = normalvariate(mu, sigma)
+            points += int(score)
     return points
 
 # Implements score_freq
