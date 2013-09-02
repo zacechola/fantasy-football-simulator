@@ -8,10 +8,11 @@ from scipy import stats
 parser = argparse.ArgumentParser(description='Calculate fantasy football win probability', 
         epilog='And that is how you win your league')
 parser.add_argument("matchups", help="the number of matchup trials to run", type=int)
+parser.add_argument("me_file", help="my file to open.")
 parser.add_argument("opp_file", help="opponent file to open")
 parser.add_argument("-s", "--spread", help="calculate the chance your score exceeds a spread", type=int)
 parser.add_argument("-q", "--quiet", help="do not print matchups", action="store_true")
-parser.add_argument("-t", "--ties", help="count ties as wins", action="store_true")
+parser.add_argument("-t", "--ties", help="count ties as wins (useful for playoffs)", action="store_true")
 parser.add_argument("-p", "--partial", help="count partial points", action="store_true")
 parser.parse_args()
 args = parser.parse_args()
@@ -19,7 +20,7 @@ args = parser.parse_args()
 
 # Initialize some variables
 
-me_file = open('teams/me.csv')
+me_file = open(args.me_file)
 opp_file = open(args.opp_file)
 
 MATCHUPS = args.matchups
@@ -132,8 +133,8 @@ def freq_table():
                 [160.5, 170.5],
                 [170.5, 180.5],
                 [180.5, 190.5]
-                ]
-                )
+            ]
+    )
 
     for i in bounds:
         upper = i[:1]
